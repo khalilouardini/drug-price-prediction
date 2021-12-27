@@ -51,7 +51,7 @@ def run_drug_price_prediction(data_dir, model, n_estimators, random_search):
 
     return model, mape_score, mse_score, mae_score
 
-def run_inference(data_dir):
+def run_inference(data_dir, model, n_estimators):
     """Data pipeline and predictions on new unseen data.
     Parameters
     ----------
@@ -59,7 +59,7 @@ def run_inference(data_dir):
         Path to the data directory
     """
     logging.info("Fitting model on the train set...")
-    model, _, _, _ = run_drug_price_prediction(data_dir) 
+    model, _, _, _ = run_drug_price_prediction(data_dir, model, n_estimators, random_search=False) 
 
     # Import and merge train data
     test_df = pd.read_csv(data_dir + 'drugs_test.csv')

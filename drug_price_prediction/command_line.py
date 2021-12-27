@@ -30,6 +30,13 @@ logging.basicConfig(
               prompt='Whether to run hyperparameter tuning (random search)',
               help='Whether to run hyperparameter tuning (random search)'
               )
+@click.option('--run_inference',
+              prompt='Whether to run inference on test set',
+              help='Whether to run inference on test set'
+              )
 
-def drug_price_prediction(data_dir, model, n_estimators, do_hyperopt):
-    pipelines.run_drug_price_prediction(data_dir, model, n_estimators, do_hyperopt)
+def drug_price_prediction(data_dir, model, n_estimators, do_hyperopt, run_inference):
+    if run_inference:
+        pipelines.run_inference(data_dir, model, n_estimators)
+    else:
+        pipelines.run_drug_price_prediction(data_dir, model, n_estimators, do_hyperopt)

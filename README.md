@@ -1,92 +1,102 @@
-# Drug Price Prediction
+# Drug Price Prediction: my solution
 
 ## Project Description
 
-The objective is to predict the price for each drug in the test data set (`drugs_test.csv`). Please refer to the `sample_submission.csv` file for the correct format for submissions.
+The objective is to predict the price for each drug in the test data set (`drugs_test.csv`). 
+I tried to package this codebase as a python library that can be integrated quickly in a production setting by collaborators (developers) or regular users. 
 
-## Guidelines
+## 1. Setup
+System requirements: `Python3`
+to install the package, follow these instructions
 
-Build a machine learning pipeline to train a model and generate predictions for the test set. We expect an application layout, not notebooks (but feel free to also share your notebooks if you want). Structure your code so that it can be packaged and deployed to production. Think that your code will be the first iteration of a pipeline the company will use in production.
+-   Create a new envrionement with `conda` (or `virtualenv`): `conda create -n name_env python=3.7.12`
+-   Install the package directly from the github repostiory in --editable mode (-e): `pip install -e 'git+https://github.com/khalilouardini/drug_price_prediction.git#drug_price_prediction'`
+-   Make sure `pytest` is installed and run the tests: `python -m pytest` 
+-   Install requirements: `pip install -r requirements.txt`
+-   All set!
 
-You are free to define appropriate performance metrics that fit the problem and chosen algorithm.
+## 2. Instructions 
 
-Please modify `README.md` to add:
+### Running predictions
+First make sure you have a directory with all the data (train and test). By default all the data is in `exploration/data/`.
 
-1. Instructions on how to run your code.
-2. A paragraph or two about what algorithm was chosen for which problem, why (including pros/cons) and what you are particularly proud of in your implementation, and why.
-3. Overall performance of your algorithm(s).
+We can select hyperparameters from the command line:
+-   `--data_dir`: Path to the data directory
+-   `--model`: Model to train (Random Forest or XGBoost)
+-   `--n_estimators`: Number of estimators in our ensembling model (number of decision trees)
+-   `--do_hyperopt`: Whether to run hyperparameter tuning (random search)
+-   `--run_inference`: Whether to run inference on test set
 
-## Evaluation criteria
+You can also run `drug_price_prediction --help` in the commande line.
 
-- **Code quality**: code is written once but read many times. Please make sure that your code is well-documented, and is free of programmatic and stylistic errors.
-- **Reproducibility and replicability**: We should be able to reproduce your work and achieve the same results.
+An example would be: `drug_price_prediction --data_dir exploration/data/ --model 'RF' --n_estimators 600 --do_hyperopt True --run_inference False` 
 
-Evaluation of your submission will be based on the following criteria:
+## 3. Discussion
 
-1. Did you follow the instructions for submission?
-2. Can we package and deploy your code to production?
-3. Did you apply an appropriate machine learning algorithm for the problem and why you have chosen it?
-4. What features in the data set were used and why?
-5. What design decisions did you make when designing your models? Why (i.e. were they explained)?
-6. Did you separate any concerns in your application? Why or why not?
+### 3.0 About time management
+In this section I will discuss my decisions and workflow for this project. As I briefly mentioned in the description, to accomodate the guidelines, I decided to focus on the productionalization of the code rather than the models and the performance. Complex data pre-processing pipelines are often the pain point when it comes to putting code in production, so to make sure my code is reliable in a production setting, I spent a lot of time on the data engineering and its testing. The idea is that most of the predictive modeling part will come from reliable sources like `scikit-learn`. Therefore, we need to be very careful with the pre-processing and feature engineering (i.e the code that we actually write), to ensure robustness in production.
 
-There are many ways and algorithms to solve these questions; we ask that you approach them in a way that showcases one of your strengths. We're happy to tweak the requirements slightly if it helps you show off one of your strengths.
+Globally this is how I organized my time:
+-   Feature Engineering: ~ 2h
+-   Model selection: ~ 1h30
+-   Packaging/Refactoring: ~ 3h
 
-## Files & Field Descriptions
+I will briefly detail step by step the process.
 
-You'll find five CSV files:
-- `drugs_train.csv`: training data set,
-- `drugs_test.csv`: test data set,
-- `active_ingredients.csv`: active ingredients in the drugs.
-- `drug_label_feature_eng.csv`: feature engineering on the text description,
-- `sample_submission.csv`: the expected output for the predictions.
+#### 3.1 Exploratory analysis and feature engineering.
 
-### Drugs
+The aim of this part is to familiarize with the dataset and make decisions about the feature engineering approach. This analysis is commented (and justified) step by step in the notebook `exploration/data_analysis_and_feature_engineering.ipynb`. The feature engineering steps are summarized below:
 
-Filenames: `drugs_train.csv` and `drugs_test.csv`
+-   Log-transform the price to work with a 'gaussian-like' distribution with a wider spread.
+-   Convert the dates to integers, and only keep the year.
+-   Encode binary features (e.g "approved status").
+-   Encode ordinal features (e.g "reimbursement rate") 
+-   Encode all categorical features.
+-   Encode each text feature (i.e description, active ingredients, pharmaceutical company, dosage form and route of administration) with a  Tfidf vectorizer followed by a PCA for dimensionality reduction
 
-| Field | Description |
-| --- | --- |
-| `drug_id` | Unique identifier for the drug. |
-| `description` | Drug label. |
-| `administrative_status` | Administrative status of the drug. |
-| `marketing_status` | Marketing status of the drug. |
-| `approved_for_hospital_use` | Whether the drug is approved for hospital use (`oui`, `non` or `inconnu`). |
-| `reimbursement_rate` | Reimbursement rate of the drug. |
-| `dosage_form` | See [dosage form](https://en.wikipedia.org/wiki/Dosage_form).|
-| `route_of_administration` | Path by which the drug is taken into the body. Comma-separated when a drug has several routes of administration. See [route of administration](https://en.wikipedia.org/wiki/Route_of_administration). |
-| `marketing_authorization_status` | Marketing authorization status. |
-| `marketing_declaration_date` | Marketing declaration date. |
-| `marketing_authorization_date` | Marketing authorization date. |
-| `marketing_authorization_process` | Marketing authorization process. |
-| `pharmaceutical_companies` | Companies owning a license to sell the drug. Comma-separated when several companies sell the same drug. |
-| `price` | Price of the drug (i.e. the output variable to predict). |
+To keep the exploratory part separated on jupyter notebooks, all the analysis is done on a separate branch. The code in that branch will later be refactored and merged with the main branch.
 
-**Note:** the `price` column only exists for the train data set.
+#### 3.2 Predictive modelling and evaluation.
 
-### Active Ingredients
+For the predictive models we keep it simple and start with a Random Forest regressor. Random Forest is a good candidate for a first baseline beacause of its flexibility:
+-   Not too intense computationally
+-   Easy to interpret (feature importance analysis) with no linearity assumption
+-   No need for data scaling or fancy pre-processing
+-   With `scikit-learn`, it's a few lines of codes. We want to keep the code clean and simple for a first iteration
 
-Filename: `active_ingredients.csv`
+This part is also ran on a different notebook in `prediction_random_forest.ipynb`.
 
-| Field | Description |
-| --- | --- |
-| `drug_id` | Unique identifier for the drug. |
-| `active_ingredient` | [Active ingredient](https://en.wikipedia.org/wiki/Active_ingredient) in the drug. |
+We also experiment with another ensembling method, XGBoost that uses **gradient boosting** rather than bagging to learn with a collection of decision trees.
 
-**Note:** some drugs are composed of several active ingredients.
+For **evaluation** we report the ***Root Mean Squared Error (RMSE)***, the ***Mean Absolute Error (MAE)***, the ***Mean Averaged Percentage Error*** (MAPE) and the ***Pearson (r) correlation*** of the target in logscale.
 
-### Text Description Feature Engineering
+#### 3.3 Refactoring
 
-Filename: `drug_label_feature_eng.csv`
+With these two notebooks, we can conclude the exploratory part of this work. The next step was to refactor the code into simple modules that could be easily tested. Each of these modules shoud have a single clear objective. The refactoring is also done in a separate local branch that will be merged once each module is tested. 
 
-This file is here to help you and provide some feature engineering on the drug labels.
+These modules are separated in two scripts:
+-   `data.py`: each function in this script is a step of the pre-processing pipeline
+-   `models.py`: contains code for fitting models (with or without hyperparameter search) and reporting evaluation metrics.``
+-   All the tests are saved in the `tests/` fodler.
 
-| Field | Description |
-| --- | --- |
-| `description` | Drug label. |
-| `label_XXXX` | Dummy coding using the words in the drug label (e.g. `label_ampoule` = `1` if the drug label contains the word `ampoule` - vial in French). |
-| `count_XXXX` | Extract the quantity from the description (e.g. `count_ampoule` = `32` if the drug label  the sequence `32 ampoules`). |
+#### 3.4 Production
 
-**Note:** This data has duplicate records and some descriptions in `drugs_train.csv` or `drugs_test.csv` might not be present in this file.
+After merging the refactoring branch with our main, we create one last branch to merge the data pre-processing and the prediction code into a single pipeline. We use all the modules coded so far in the `pipelines.py` script that summarizes all the necessary steps from pre-processing, to training, evaluation and inference in one place.
 
-Good luck.
+For convenience, we use the `click`package and add a `command_line.py` file to run all operations from the linux command line.
+
+#### Performance
+
+Finally we reach our best performance of:
+
+-   RMSE = 
+-   MAE = 
+-   MAPE = 
+-   r = 
+
+with a tuned XGBoost regressor model with the following hyperparameters:
+-   n_estimators = 
+-   learning_rate = 
+-   max_depth = 
+
+ We use this same model for our final predictions. When running predictions (**Section 2**), make sur `--run_inference`is set to **True**. The predictions on the test are saved in the `results/` folder. 
