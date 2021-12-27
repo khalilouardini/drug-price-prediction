@@ -91,14 +91,13 @@ For convenience, we use the `click`package and add a `command_line.py` file to r
 
 Finally we reach our best performance on the test set (20% of the train set) of:
 
--   RMSE = 
--   MAE = 
--   MAPE = 
--   r = 
+-   RMSE = 57.5
+-   MAE = 14.3
+-   MAPE = 50.2
+-   r = 0.87
 
-with a tuned XGBoost regressor model with the following hyperparameters:
--   n_estimators = 1000
--   learning_rate = 0.01
+with a tuned Random Forest regressor model with the following hyperparameters:
+-   n_estimators = 600
 -   max_depth = 100
 
- We use this same model for our final predictions. When running predictions (**Section 2**), make sur `--run_inference`is set to **True**. The predictions on the test are saved in the `results/` folder. 
+ We use this same model for our final predictions. When running predictions (**Section 2**), make sure `--run_inference`is set to **True**. The predictions on the test are saved in the `results/` folder. 
