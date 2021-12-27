@@ -7,3 +7,7 @@ feat_categorical = ['marketing_authorization_status', 'marketing_authorization_p
 feat_binary = ['approved_for_hospital_use', 'administrative_status']
 
 feat_ordinal = ["reimbursement_rate"]
+
+feat_dates = ["marketing_declaration_date", "marketing_authorization_date"]
+
+

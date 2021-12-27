@@ -1,6 +1,6 @@
 import re
 import unidecode
-from nltk import punctuation
+from string import punctuation
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import PCA
 
