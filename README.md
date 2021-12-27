@@ -11,7 +11,7 @@ I tried to package this codebase as a python library that can be integrated quic
 
 to install the package, follow these instructions
 
--   Create a new envrionement with `conda` or `virtualenv`: `conda create -n name_env python=3.7.12`
+-   Create a new envrionment with `conda` or `virtualenv`: `conda create -n name_env python=3.7.12`
 -   Install the package into your envrionement - `pip install -e 'git+https://github.com/khalilouardini/drug_price_prediction.git#egg=drug_price_prediction'`
 -   Install requirements - `pip install -r requirements.txt`
 -   Make sure `pytest` is installed and run the tests: `python -m pytest` 

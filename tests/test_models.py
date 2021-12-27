@@ -9,7 +9,7 @@ validation_data_path = os.path.join(os.path.dirname(__file__), "validation_data/
 
 def test_run_model():
     # Import and merge data
-    validation_df = pd.read_csv(validation_data_path, index_col=0)
+    validation_df = pd.read_csv(validation_data_path)
     active_ingredients = pd.read_csv(os.path.join(os.path.dirname(__file__), "validation_data/active_ingredients.csv"))
     valid_index = validation_df['drug_id'].values
     dict_ingredients_valid = {k: active_ingredients[active_ingredients.drug_id==k]['active_ingredient'].values[0] for k in valid_index}
