@@ -46,6 +46,6 @@ def vectorizer_text(corpus, reduce_dimension=False):
     # Preprocessing
     X_tfidf = vectorizer.fit_transform(corpus).toarray()
     if reduce_dimension:
-        pca = PCA(n_components=0.9, whiten=True)                  
+        pca = PCA(n_components=50, whiten=True)                  
         X_tfidf = pca.fit_transform(X_tfidf) 
     return X_tfidf

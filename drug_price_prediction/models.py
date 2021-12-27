@@ -53,14 +53,12 @@ def fit_cv(train_df, keep_features, model, n_estimators):
                 'n_jobs': -1, 
                 'verbose': 1,
                 'max_features': 'auto',
-                'min_samples_leaf': 1,
                 'max_depth': 60 
                 }
     else:
-        hyperparameters_xg = {'learning_rate': 0.1,
-                          'n_estimators' :200,
-                          'max_depth' :60,
-                          'min_child_weight': 1,
+        hyperparameters_xg = {'learning_rate': 0.01,
+                          'n_estimators' :n_estimators,
+                          'max_depth' :100,
                           'n_jobs': -1
                         }
 
@@ -165,7 +163,6 @@ def fit_cv_random_search(train_df, keep_features, model):
 
     logging.info("Best parameters {} for {} model".format(model, rf_random.best_params_))
     best_model = rf_random.best_estimator_
-    print("Parameters of the best model:", best_model.best_params_)
     y_pred_test = best_model.predict(X_test)
 
     logging.info("Running inference with best {} model".format(model))

@@ -70,7 +70,6 @@ def run_inference(data_dir, model, n_estimators):
 
     # Pre-processing pipeline for test set
     processed_df = data.normalize_text(test_df)
-    processed_df = data.add_log_target(processed_df, 'price')
     processed_df = data.transform_date_features(processed_df, feat_dates)
     processed_df = data.encode_binary(processed_df, feat_binary)
     processed_df = data.encode_ordinal(processed_df, feat_ordinal)
@@ -85,7 +84,7 @@ def run_inference(data_dir, model, n_estimators):
     y_pred = np.exp(model.predict(X_test))
     submissions_dict = {'drug_id': test_index, 'price': y_pred}
 
-    if not os.path.exists('../results'):
-        os.mkdir('../results')
+    if not os.path.exists('results/'):
+        os.mkdir('results/')
 
-    pd.DataFrame.from_dict(submissions_dict).to_csv('../results/' + 'predictions.csv')
+    pd.DataFrame.from_dict(submissions_dict).to_csv('results/' + 'predictions.csv')
