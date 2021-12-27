@@ -12,6 +12,7 @@ I tried to package this codebase as a python library that can be integrated quic
 to install the package, follow these instructions
 
 -   Create a new envrionment with `conda` or `virtualenv`: `conda create -n name_env python=3.7.12`
+-   Activate envrionment: `conda activate name_env`
 -   Install the package into your envrionement - `pip install -e 'git+https://github.com/khalilouardini/drug_price_prediction.git#egg=drug_price_prediction'`
 -   Install requirements - `pip install -r requirements.txt`
 -   Make sure `pytest` is installed and run the tests: `python -m pytest` 
@@ -31,7 +32,7 @@ We can select hyperparameters from the command line:
 
 [You can also run `drug_price_prediction --help` in the commande line]
 
-An example would be: `drug_price_prediction --data_dir exploration/data/ --model 'RF' --n_estimators 600 --do_hyperopt True --run_inference False` 
+An example would be: `drug_price_prediction --data_dir exploration/data/ --model 'RF' --n_estimators 600 --do_hyperopt False --run_inference True` 
 
 ## 3. Discussion
 
@@ -70,7 +71,7 @@ This part is also ran on a different notebook in `prediction_random_forest.ipynb
 
 We also experiment with another ensembling method, XGBoost that uses **gradient boosting** rather than bagging to learn with a collection of decision trees.
 
-For **evaluation** we report the ***Root Mean Squared Error (RMSE)***, the ***Mean Absolute Error (MAE)***, the ***Mean Averaged Percentage Error*** (MAPE) and the ***Pearson (r) correlation*** of the target in logscale.
+For **evaluation** we report the ***Root Mean Squared Error (RMSE)***, the ***Mean Absolute Error (MAE)***, the ***Mean Aboslute Percentage Error (MAPE)***  and the ***Pearson (r) correlation*** of the target in logscale.
 
 ### 3.3 Refactoring
 
