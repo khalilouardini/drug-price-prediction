@@ -35,7 +35,7 @@ def data_preparation(train_df, keep_features, test_size=0.2, target_col='logpric
 
     return X_train, X_test, y_train, y_test
 
-def fit_cv(train_df, keep_features, model='RF'):
+def fit_cv(train_df, keep_features, model='RF', n_estimators=20):
     """Fits a regressor on the data using a 5-fold cross validation.
     Parameters
     ----------
@@ -49,7 +49,7 @@ def fit_cv(train_df, keep_features, model='RF'):
             trained regressor and predictions on the test set
     """
     if model == 'RF':
-        hyperparameters_rf = {'n_estimators': 850, 
+        hyperparameters_rf = {'n_estimators': n_estimators, 
                 'n_jobs': -1, 
                 'verbose': 1,
                 'max_features': None,
@@ -101,6 +101,7 @@ def fit_cv(train_df, keep_features, model='RF'):
 
     logging.info("===On the test set: MAPE={} | RMSE={} | MAE={} | Pearson (Log) r = {}===".format(mape_test, rmse_test, mae_test, r))
 
+    return regressor, mape_test
 def fit_cv_random_search(train_df, keep_features, model='RF'):
     """Fits a regressor on the data using a 5-fold cross validation.
     Parameters

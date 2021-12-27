@@ -55,7 +55,7 @@ def test_encode_binary():
         'binary': [1, 0, 1]
         }
 
-    result = encode_binary(pd.DataFrame.from_dict(test_dict), {'Yes': 1, 'No': 0}, ['binary'])
+    result = encode_binary(pd.DataFrame.from_dict(test_dict), ['binary'])
     expected = pd.DataFrame.from_dict(expected_dict)
 
     assert_frame_equal(result, expected)

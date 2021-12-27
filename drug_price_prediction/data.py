@@ -61,7 +61,7 @@ def transform_date_features(df, list_features):
         df[feat] = df[feat].apply(lambda x: str(x)[:4]).astype(int)
     return df
 
-def encode_binary(df, replace_dict, list_features):
+def encode_binary(df, list_features):
     """One hot encoding of binary features.
     Parameters
     ----------
@@ -75,6 +75,8 @@ def encode_binary(df, replace_dict, list_features):
         processed Data-frame
     """
     for feat in list_features:
+        unique = df[feat].unique()
+        replace_dict = {unique[0]: 1, unique[1]: 0}
         df.loc[:, feat] = df.loc[:, feat].replace(replace_dict)
     return df
 
@@ -121,7 +123,7 @@ def one_hot_encode_categorical(df, list_features):
 
     df = df.drop(list_features, axis=1)
     df = df.join(categorical_df)
-    
+
     return df
 
 def encode_text(df, list_features):
@@ -155,6 +157,7 @@ def encode_text(df, list_features):
                         )
 
     df = df.join(text_df)
+    df = df.drop(list_features, axis=1)
     logging.info('Processed dataframe ---', 'NEW Dimension:', df.shape)
 
     return df
