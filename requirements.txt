@@ -13,7 +13,7 @@ cycler==0.11.0
 debugpy==1.5.1
 decorator==5.1.0
 defusedxml==0.7.1
--e git+https://github.com/khalilouardini/drug_price_prediction@4873fea051e4d77a71b1601baad683aa369f4560#egg=drug_price_prediction
+-e git+https://github.com/khalilouardini/drug_price_prediction@abee048283b504c2dfb130183fdad3fe51799542#egg=drug_price_prediction
 entrypoints==0.3
 fonttools==4.28.5
 gurobipy==9.1.1

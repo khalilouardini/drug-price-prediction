@@ -51,8 +51,9 @@ def fit_cv(train_df, keep_features, model, n_estimators):
         hyperparameters_rf = {'n_estimators': n_estimators, 
                 'n_jobs': -1, 
                 'verbose': 1,
-                'max_features': None,
-                'min_samples_leaf': 1   
+                'max_features': 'auto',
+                'min_samples_leaf': 1,
+                'max_depth': 60 
                 }
 
     logging.info("Data preparation")
