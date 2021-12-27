@@ -25,4 +25,15 @@ setup(
     author_email='ouardini.k@gmail.com',  # Substitute your email
     license='MIT',
     packages=['drug-price-prediction'],
+    install_requires=[
+    'pypandoc>=1.7.2',
+    'watermark>=2.2.0',
+    'pandas>=1.3.5',
+    'scikit-learn>=1.0.2',
+    'scipy>=1.7.3',
+    'matplotlib>=3.5.1',
+    'pytest>=6.2.5',
+    'pytest-runner>=5.3.1'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest']  
 )
