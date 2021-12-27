@@ -8,7 +8,6 @@ import time
 import numpy as np
 from scipy.stats import pearsonr
 from sklearn.model_selection import KFold
-
 from .utils.models_utils import mape_error
 
 mape = make_scorer(mape_error, greater_is_better=False)
@@ -35,7 +34,7 @@ def data_preparation(train_df, keep_features, test_size=0.2, target_col='logpric
 
     return X_train, X_test, y_train, y_test
 
-def fit_cv(train_df, keep_features, model='RF', n_estimators=20):
+def fit_cv(train_df, keep_features, model, n_estimators):
     """Fits a regressor on the data using a 5-fold cross validation.
     Parameters
     ----------
@@ -99,9 +98,13 @@ def fit_cv(train_df, keep_features, model='RF', n_estimators=20):
     rmse_test = np.sqrt(mean_squared_error(np.exp(y_test), np.exp(y_pred_test)))
     mae_test = mean_absolute_error(np.exp(y_test), np.exp(y_pred_test))
 
-    logging.info("===On the test set: MAPE={} | RMSE={} | MAE={} | Pearson (Log) r = {}===".format(mape_test, rmse_test, mae_test, r))
+    logging.info("===On the test set: MAPE={} | RMSE={} | MAE={} | Pearson (Log) r = {}===".format(str(mape_test),
+     str(rmse_test), 
+     str(mae_test), 
+     str(r))
+     )
 
-    return regressor, mape_test
+    return regressor, mape_test, rmse_test, mae_test
 def fit_cv_random_search(train_df, keep_features, model='RF'):
     """Fits a regressor on the data using a 5-fold cross validation.
     Parameters
@@ -144,7 +147,11 @@ def fit_cv_random_search(train_df, keep_features, model='RF'):
     rmse_test = np.sqrt(mean_squared_error(np.exp(y_test), np.exp(y_pred_test)))
     mae_test = mean_absolute_error(np.exp(y_test), np.exp(y_pred_test))
 
-    logging.info("===On the test set: MAPE={} | RMSE={} | MAE={} | Pearson (Log) r = {}===".format(mape_test, rmse_test, mae_test, r))
+    logging.info("===On the test set: MAPE={} | RMSE={} | MAE={} | Pearson (Log) r = {}===".format(str(mape_test),
+                str(rmse_test), 
+                str(mae_test), 
+                str(r))
+                )
 
     return best_model
 

@@ -19,10 +19,9 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3',
     ],
-    # Substitute <github_account> with the name of your GitHub account
     url='https://github.com/khalilouardini/drug_price_prediction',
-    author='Khalil Ouardini',  # Substitute your name
-    author_email='ouardini.k@gmail.com',  # Substitute your email
+    author='Khalil Ouardini', 
+    author_email='ouardini.k@gmail.com',
     license='MIT',
     packages=['drug_price_prediction'],
     install_requires=[
@@ -33,7 +32,12 @@ setup(
     'scipy>=1.7.3',
     'matplotlib>=3.5.1',
     'pytest>=6.2.5',
-    'pytest-runner>=5.3.1'],
+    'pytest-runner>=5.3.1',
+    'click>=8.0.3'],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest']  
+    tests_require=['pytest'],
+    entry_points='''
+    [console_scripts]
+    drug_price_prediction=drug_price_prediction.command_line:drug_price_prediction
+'''
 )

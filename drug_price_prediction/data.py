@@ -145,7 +145,7 @@ def encode_text(df, list_features):
     for feat in list_features: 
         # computes a tfidf matrix, apply PCA, for each text feature
         x = vectorizer_text(df[feat].values, reduce_dimension=True)
-        logging.info('Dimension of TfIdf after PCA for', feat, ' - Dimension of features:', x.shape)
+        print('Dimension of TfIdf after PCA for', str(feat), ' - Dimension of features:', str(x.shape))
         # Stack features
         X = np.hstack((X, x))
         # creates a name for each component:    
@@ -158,7 +158,7 @@ def encode_text(df, list_features):
 
     df = df.join(text_df)
     df = df.drop(list_features, axis=1)
-    logging.info('Processed dataframe ---', 'NEW Dimension:', df.shape)
+    print('Processed dataframe ---', 'NEW Dimension:', str(df.shape))
 
     return df
 
