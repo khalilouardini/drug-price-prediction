@@ -12,7 +12,7 @@ def readme():
 
 
 setup(
-    name='drug-price-prediction',
+    name='drug_price_prediction',
     version='0.1',
     description='Drug Price Prediction Module',
     long_description=readme(),
@@ -20,11 +20,11 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     # Substitute <github_account> with the name of your GitHub account
-    url='https://github.com/khalilouardini/drug-price-prediction',
+    url='https://github.com/khalilouardini/drug_price_prediction',
     author='Khalil Ouardini',  # Substitute your name
     author_email='ouardini.k@gmail.com',  # Substitute your email
     license='MIT',
-    packages=['drug-price-prediction'],
+    packages=['drug_price_prediction'],
     install_requires=[
     'pypandoc>=1.7.2',
     'watermark>=2.2.0',
