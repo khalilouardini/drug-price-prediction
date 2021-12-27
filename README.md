@@ -2,15 +2,18 @@
 
 ## Project Description
 
-The objective is to predict the price for each drug in the test data set (`drugs_test.csv`). 
-I tried to package this codebase as a python library that can be integrated quickly in a production setting by collaborators (developers) or regular users. 
+The objective is to predict the price for each drug in the test data set (`drugs_test.csv`) 
+
+I tried to package this codebase as a python library that can be integrated quickly in a production setting by collaborators (developers) or regular users
 
 ## 1. Setup
-System requirements: `Python3`
+**System requirements**: `Python3`
+
+
 to install the package, follow these instructions
 
--   Create a new envrionement with `conda` (or `virtualenv`): `conda create -n name_env python=3.7.12`
--   Install the package directly from the github repostiory in --editable mode (-e): `pip install -e 'git+https://github.com/khalilouardini/drug_price_prediction.git#drug_price_prediction'`
+-   Create a new envrionement with `conda` or `virtualenv`: `conda create -n name_env python=3.7.12`
+-   Install the package directly from the github repostiory in --editable mode: `pip install -e 'git+https://github.com/khalilouardini/drug_price_prediction.git#drug_price_prediction'`
 -   Make sure `pytest` is installed and run the tests: `python -m pytest` 
 -   Install requirements: `pip install -r requirements.txt`
 -   All set!
@@ -18,13 +21,13 @@ to install the package, follow these instructions
 ## 2. Instructions 
 
 ### Running predictions
-First make sure you have a directory with all the data (train and test). By default all the data is in `exploration/data/`.
+First make sure you have a directory with all the data - train and test. By default all the data is in `exploration/data/`
 
 We can select hyperparameters from the command line:
 -   `--data_dir`: Path to the data directory
--   `--model`: Model to train (Random Forest or XGBoost)
--   `--n_estimators`: Number of estimators in our ensembling model (number of decision trees)
--   `--do_hyperopt`: Whether to run hyperparameter tuning (random search)
+-   `--model`: Model to train [Random Forest or XGBoost]
+-   `--n_estimators`: Number of estimators in our ensembling model [number of decision trees]
+-   `--do_hyperopt`: Whether to run hyperparameter tuning [random search]
 -   `--run_inference`: Whether to run inference on test set
 
 You can also run `drug_price_prediction --help` in the commande line.
@@ -49,10 +52,10 @@ The aim of this part is to familiarize with the dataset and make decisions about
 
 -   Log-transform the price to work with a 'gaussian-like' distribution with a wider spread.
 -   Convert the dates to integers, and only keep the year.
--   Encode binary features (e.g "approved status").
--   Encode ordinal features (e.g "reimbursement rate") 
+-   Encode binary features [e.g "approved status"].
+-   Encode ordinal features [e.g "reimbursement rate"] 
 -   Encode all categorical features.
--   Encode each text feature (i.e description, active ingredients, pharmaceutical company, dosage form and route of administration) with a  Tfidf vectorizer followed by a PCA for dimensionality reduction
+-   Encode each text feature [i.e description, active ingredients, pharmaceutical company, dosage form and route of administration] with a  Tfidf vectorizer followed by a PCA for dimensionality reduction
 
 To keep the exploratory part separated on jupyter notebooks, all the analysis is done on a separate branch. The code in that branch will later be refactored and merged with the main branch.
 
@@ -60,7 +63,7 @@ To keep the exploratory part separated on jupyter notebooks, all the analysis is
 
 For the predictive models we keep it simple and start with a Random Forest regressor. Random Forest is a good candidate for a first baseline beacause of its flexibility:
 -   Not too intense computationally
--   Easy to interpret (feature importance analysis) with no linearity assumption
+-   Easy to interpret [feature importance analysis] with no linearity assumption
 -   No need for data scaling or fancy pre-processing
 -   With `scikit-learn`, it's a few lines of codes. We want to keep the code clean and simple for a first iteration
 
