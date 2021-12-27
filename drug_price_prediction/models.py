@@ -9,6 +9,7 @@ import numpy as np
 from scipy.stats import pearsonr
 from sklearn.model_selection import KFold
 from .utils.models_utils import mape_error
+import xgboost as xg
 
 mape = make_scorer(mape_error, greater_is_better=False)
 
@@ -55,6 +56,14 @@ def fit_cv(train_df, keep_features, model, n_estimators):
                 'min_samples_leaf': 1,
                 'max_depth': 60 
                 }
+    else:
+        hyperparameters_xg = {'learning_rate': 0.1,
+                          'n_estimators' :200,
+                          'max_depth' :60,
+                          'min_child_weight': 1,
+                          'n_jobs': -1
+                        }
+
 
     logging.info("Data preparation")
     X, X_test, y, y_test = data_preparation(train_df, keep_features)
@@ -72,7 +81,12 @@ def fit_cv(train_df, keep_features, model, n_estimators):
         y_train, y_valid = y[train_index], y[valid_index]
         
         if model == 'RF':
+            logging.info("Using RandomForest()...")
             regressor = RandomForestRegressor(**hyperparameters_rf)
+        else:
+            logging.info("Using XGBRegressor()...")
+            regressor = xg.XGBRegressor(**hyperparameters_xg)
+
         t0 = time.time()
         regressor.fit(X_train, y_train)
         logging.info("Fit in %0.3fs" % (time.time() - t0))
@@ -106,7 +120,7 @@ def fit_cv(train_df, keep_features, model, n_estimators):
      )
 
     return regressor, mape_test, rmse_test, mae_test
-def fit_cv_random_search(train_df, keep_features, model='RF'):
+def fit_cv_random_search(train_df, keep_features, model):
     """Fits a regressor on the data using a 5-fold cross validation.
     Parameters
     ----------
@@ -121,16 +135,27 @@ def fit_cv_random_search(train_df, keep_features, model='RF'):
     """
     if model == 'RF':
         random_grid = {'n_estimators': [int(x) for x in np.linspace(start = 200, stop = 2000, num = 10)],
-               'max_depth': [int(x) for x in np.linspace(10, 110, num = 11)],
-              'max_features': ['auto', 'sqrt']
-              }
+            'max_depth': [int(x) for x in np.linspace(10, 110, num = 11)],
+            'max_features': ['auto', 'sqrt']
+            }
+    else:
+        random_grid = {'n_estimators': [int(x) for x in np.linspace(start = 200, stop = 2000, num = 10)],
+            'max_depth': [int(x) for x in np.linspace(10, 110, num = 11)],
+            'learning_rate': [0.1, 0.01, 0.001]
+            }
+
     logging.info("Data preparation")
     X_train, X_test, y_train, y_test = data_preparation(train_df, keep_features)
 
-    rf = RandomForestRegressor()
+    if model == 'RF':
+        logging.info("Using RandomForest()...")
+        rf = RandomForestRegressor()
+    else:
+        logging.info("Using XGBRegressor()...")
+        rf = xg.XGBRegressor()
     rf_random = RandomizedSearchCV(estimator = rf,
                                 param_distributions = random_grid,
-                                n_iter = 2,
+                                n_iter = 10,
                                 cv = 3,
                                 verbose=2,
                                 random_state=42,
@@ -140,6 +165,7 @@ def fit_cv_random_search(train_df, keep_features, model='RF'):
 
     logging.info("Best parameters {} for {} model".format(model, rf_random.best_params_))
     best_model = rf_random.best_estimator_
+    print("Parameters of the best model:", best_model.best_params_)
     y_pred_test = best_model.predict(X_test)
 
     logging.info("Running inference with best {} model".format(model))
@@ -154,6 +180,6 @@ def fit_cv_random_search(train_df, keep_features, model='RF'):
                 str(r))
                 )
 
-    return best_model
+    return best_model, mape_test, rmse_test, mae_test
 
 

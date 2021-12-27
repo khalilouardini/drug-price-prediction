@@ -13,6 +13,7 @@ logging.basicConfig(
 @click.command()
 @click.option('--data_dir',
               type=click.Path(exists=True),
+              default='exploration/data/',
               prompt='Path to the data directory',
               help='Path to the data directory')
 @click.option('--model',
@@ -22,8 +23,13 @@ logging.basicConfig(
               )
 @click.option('--n_estimators',
               default=500,
-              prompt='Number of estimarors in our ensembling model',
-              help='Number of estimarors in our ensembling model'
-              )              
-def drug_price_prediction(data_dir, model, n_estimators):
-    pipelines.run_drug_price_prediction(data_dir, model, n_estimators)
+              prompt='Number of estimators in our ensembling model',
+              help='Number of estimators in our ensembling model'
+              )          
+@click.option('--do_hyperopt',
+              prompt='Whether to run hyperparameter tuning (random search)',
+              help='Whether to run hyperparameter tuning (random search)'
+              )
+
+def drug_price_prediction(data_dir, model, n_estimators, do_hyperopt):
+    pipelines.run_drug_price_prediction(data_dir, model, n_estimators, do_hyperopt)

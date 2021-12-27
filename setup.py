@@ -37,7 +37,7 @@ setup(
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
     entry_points='''
-    [console_scripts]
-    drug_price_prediction=drug_price_prediction.command_line:drug_price_prediction
-'''
+        [console_scripts]
+    drug_price_prediction = drug_price_prediction.command_line:drug_price_prediction
+    '''
 )

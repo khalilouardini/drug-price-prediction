@@ -5,7 +5,7 @@ import os
 from drug_price_prediction import data, models
 from drug_price_prediction.constants import text_features, feat_categorical, feat_binary, feat_ordinal, feat_dates
 
-def run_drug_price_prediction(data_dir, model, n_estimators):
+def run_drug_price_prediction(data_dir, model, n_estimators, random_search):
     """Data pipeline and predictions on train set.
     Parameters
     ----------
@@ -36,11 +36,18 @@ def run_drug_price_prediction(data_dir, model, n_estimators):
 
     # Fit model
     KEEP_FEATURES = [col for col in processed_df.columns if col not in ['price', 'logprice', 'drug_id']]
-    model, mape_score, mse_score, mae_score = models.fit_cv(processed_df,
-                                                            KEEP_FEATURES,
-                                                            model=model,
-                                                            n_estimators=n_estimators
-                                                            )
+    if not random_search:
+        model, mape_score, mse_score, mae_score = models.fit_cv(processed_df,
+                                                                KEEP_FEATURES,
+                                                                model=model,
+                                                                n_estimators=n_estimators
+                                                                )
+    else:
+        logging.info("=== Hyperparameter Tuning ===")
+        model, mape_score, mse_score, mae_score = models.fit_cv_random_search(processed_df,
+                                                        KEEP_FEATURES,
+                                                        model=model
+                                                        )
 
     return model, mape_score, mse_score, mae_score
 
