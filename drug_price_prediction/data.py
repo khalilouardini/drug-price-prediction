@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.feature_extraction import DictVectorizer
 import pandas as pd
 
-from .utils.data_utils import vectorizer_text
+from  drug_price_prediction.utils.data_utils import vectorizer_text
 
 def normalize_text(df):
     """Normalizes all text in the DataFrame.
@@ -21,7 +21,7 @@ def normalize_text(df):
     logging.info("Normalizing text")
 
     for i in list(df.select_dtypes(include=['object'])):
-        #convert all strings to lowercase and remove all accents
+        #convert all strings to lowercase and normalize
         df[i] = df[i].str.lower().map(lambda x: unicodedata.normalize('NFKD', x))
         #removes space if it is first character
         df[i] = df[i].apply(lambda x : x[1:] if x[0]==' ' else x) 
@@ -59,7 +59,6 @@ def transform_date_features(df, list_features):
     """
     for feat in list_features:
         df[feat] = df[feat].apply(lambda x: str(x)[:4]).astype(int)
-        df[feat] = df[feat].apply(lambda x: str(x)[:4]).astype(int)
     return df
 
 def encode_binary(df, replace_dict, list_features):
@@ -77,7 +76,6 @@ def encode_binary(df, replace_dict, list_features):
     """
     for feat in list_features:
         df.loc[:, feat] = df.loc[:, feat].replace(replace_dict)
-        df.loc[:, feat] = df.loc[:, feat].replace(replace_dict)
     return df
 
 def encode_ordinal(df, list_features):
@@ -94,8 +92,9 @@ def encode_ordinal(df, list_features):
         processed Data-frame
     """
     for feat in list_features:
-        unique = df['feat'].unique()
-        replace_dict = {i: j for i, j in zip(unique, range(len(unique), 0, -1))}
+        unique = sorted([int(x.strip('%')) for x in df[feat].unique()])
+        unique = [str(x)+'%' for x in unique]
+        replace_dict = {i: j for i, j in zip(unique, range(len(unique)))}
         df.loc[:, feat] = df.loc[:, feat].replace(replace_dict)
     return df
 
@@ -122,7 +121,7 @@ def one_hot_encode_categorical(df, list_features):
 
     df = df.drop(list_features, axis=1)
     df = df.join(categorical_df)
-
+    
     return df
 
 def encode_text(df, list_features):
@@ -159,6 +158,8 @@ def encode_text(df, list_features):
     logging.info('Processed dataframe ---', 'NEW Dimension:', df.shape)
 
     return df
+
+
 
 
 
